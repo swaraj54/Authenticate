@@ -13,27 +13,19 @@ export const bookTicket = async (req, res) => {
         if (!bus) {
             return res.status(404).json({ message: "Bus not found.", success: false });
         }
-
-        const yesterDay = new Date(date);
-        yesterDay.setHours(0, 0, 0, 0);
-
-        const currentDay = new Date(yesterDay.getTime() + 24 * 60 * 60 * 1000);
+        const originalDate = new Date(date);
+        const isoDateString = originalDate.toISOString().split('T')[0];
 
         let bookingDoc = await Booking.findOne({
             busId: bus._id,
-            date: {
-                $gte: yesterDay.toISOString().split('T')[0],
-                $lte: currentDay.toISOString().split('T')[0]
-            }
+            date: isoDateString
         });
-        console.log(bookingDoc, yesterDay, currentDay, date, "dates")
         if (!bookingDoc) {
             bookingDoc = new Booking({
                 busId: bus._id,
-                date: currentDay.toISOString().split('T')[0],
+                date: isoDateString,
                 bookings: [],
             });
-            console.log(bookingDoc, "bookingDoc")
         }
 
         const isSeatAvailable = !bookingDoc.bookings.some(booking => booking.seat === seat);
@@ -109,18 +101,13 @@ export const busTicketHistory = async (req, res) => {
             return res.status(400).json({ message: "Bus not belongs to you.", success: false });
         }
 
-        const yesterDay = new Date(selectedDate);
-        yesterDay.setHours(0, 0, 0, 0);
 
-        const currentDay = new Date(yesterDay);
-        currentDay.setDate(yesterDay.getDate() + 1);
+        const originalDate = new Date(selectedDate);
+        const isoDateString = originalDate.toISOString().split('T')[0];
 
         let bookingDoc = await Booking.findOne({
             busId: userBus._id,
-            date: {
-                $gte: yesterDay,
-                $lt: currentDay
-            }
+            date: isoDateString
         }).populate({
             path: 'bookings.user',
             select: 'name email'
