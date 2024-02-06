@@ -22,11 +22,11 @@ export const bookTicket = async (req, res) => {
         let bookingDoc = await Booking.findOne({
             busId: bus._id,
             date: {
-                $gte: yesterDay,
-                $lte: currentDay
+                $gte: yesterDay.toISOString().split('T')[0],
+                $lte: currentDay.toISOString().split('T')[0]
             }
         });
-        console.log(bookingDoc, yesterDay, currentDay,date, "dates")
+        console.log(bookingDoc, yesterDay, currentDay, date, "dates")
         if (!bookingDoc) {
             bookingDoc = new Booking({
                 busId: bus._id,
