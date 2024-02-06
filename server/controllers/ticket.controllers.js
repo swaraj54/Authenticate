@@ -23,15 +23,17 @@ export const bookTicket = async (req, res) => {
             busId: bus._id,
             date: {
                 $gte: yesterDay,
-                $lt: currentDay
+                $lte: currentDay
             }
         });
+        console.log(bookingDoc, yesterDay, currentDay,date, "dates")
         if (!bookingDoc) {
             bookingDoc = new Booking({
                 busId: bus._id,
-                date: yesterDay.toISOString().split('T')[0],
+                date: currentDay.toISOString().split('T')[0],
                 bookings: [],
             });
+            console.log(bookingDoc, "bookingDoc")
         }
 
         const isSeatAvailable = !bookingDoc.bookings.some(booking => booking.seat === seat);
