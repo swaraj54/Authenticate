@@ -17,8 +17,7 @@ export const bookTicket = async (req, res) => {
         const yesterDay = new Date(date);
         yesterDay.setHours(0, 0, 0, 0);
 
-        const currentDay = new Date(yesterDay);
-        currentDay.setDate(yesterDay.getDate() + 1);
+        const currentDay = new Date(yesterDay.getTime() + 24 * 60 * 60 * 1000);
 
         let bookingDoc = await Booking.findOne({
             busId: bus._id,
