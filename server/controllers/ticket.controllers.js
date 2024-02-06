@@ -29,7 +29,7 @@ export const bookTicket = async (req, res) => {
         if (!bookingDoc) {
             bookingDoc = new Booking({
                 busId: bus._id,
-                date: currentDay.toISOString().split('T')[0],
+                date: yesterDay.toISOString().split('T')[0],
                 bookings: [],
             });
         }
